@@ -7,9 +7,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose
+  DialogTrigger
 } from "@/components/ui/dialog"
+import { toast } from "@/components/ui/use-toast";
 import React from "react"
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";

@@ -56,7 +56,7 @@ const speciesSchema = z.object({
 type FormData = z.infer<typeof speciesSchema>;
 
 const defaultValues: Partial<FormData> = {
-  kingdom: "Animalia",
+
 };
 
 export default function EditSpeciesDialog({ species }: { species: Species }, { userId }: { userId: string }) {
@@ -73,7 +73,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
     // The `input` prop contains data that has already been processed by zod. We can now use it in a supabase query
     const supabase = createClientComponentClient<Database>();
 
-    const { error } = await supabase.from("species").update([
+    const { error } = await supabase.from("species").update(
       {
         author: userId,
         common_name: input.common_name,
@@ -83,7 +83,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
         total_population: input.total_population,
         image: input.image,
       },
-    ]).eq("id", species.id);
+    ).eq("id", species.id)
 
     if (error) {
       return toast({

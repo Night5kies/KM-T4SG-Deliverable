@@ -14,7 +14,7 @@ import React from "react"
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { type Database } from "@/lib/schema";
-type Species = Database["public"]["Tables"]["species"]["Row"];
+type Species = Database["public"]["Tables"]["species"]["Update"];
 
 
 export function ConfirmDelete({species}:{species:Species}) {
@@ -49,7 +49,7 @@ export function ConfirmDelete({species}:{species:Species}) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button onClick={() => onDelete()} variant="destructive"> DELETE </Button>
+          <Button onClick={() => void onDelete()} variant="destructive"> DELETE </Button>
           <Button variant="secondary" onClick={() => setOpen(false)}> Cancel</Button>
         </DialogFooter>
       </DialogContent>

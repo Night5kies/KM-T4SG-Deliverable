@@ -3,28 +3,20 @@ import * as React from "react"
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
-  FormDescription,
-  FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Value } from "@radix-ui/react-select";
-import { useState, type BaseSyntheticEvent } from "react";
+
 
 
 const FormSchema = z.object({
@@ -34,32 +26,18 @@ const FormSchema = z.object({
     .boolean()
 })
 
-const defaultValues = {
-  category: "id",
-  direction: true
-};
-
 export function SortSpeciesSelect() {
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
-    defaultValues,
     mode: "onChange",
   });
 
-  const onSubmit = (input: FormData) => {
-
-  }
 
   return (
     <Form {...form}>
-      <form onSubmit={(e: BaseSyntheticEvent) => void form.handleSubmit(onSubmit)(e)}>
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
             <FormItem>
               <FormLabel>Sort by:</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={"id"}>
+              <Select defaultValue={"id"}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a verified email to display" />
@@ -74,9 +52,6 @@ export function SortSpeciesSelect() {
                 </SelectContent>
               </Select>
             </FormItem>
-          )}
-        />
-      </form>
     </Form>
   )
 }

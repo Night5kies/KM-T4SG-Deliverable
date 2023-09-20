@@ -37,10 +37,10 @@ export interface Database {
           common_name: string | null;
           description: string | null;
           id: number;
-          image: string | null;
+          image: string;
           kingdom: Database["public"]["Enums"]["kingdom"];
           scientific_name: string;
-          total_population: number | null;
+          total_population: number;
         };
         Insert: {
           author: string;
@@ -57,10 +57,10 @@ export interface Database {
           common_name?: string | null;
           description?: string | null;
           id?: number;
-          image?: string | null;
+          image?: string;
           kingdom?: Database["public"]["Enums"]["kingdom"];
           scientific_name?: string;
-          total_population?: number | null;
+          total_population?: number;
         };
         Relationships: [
           {

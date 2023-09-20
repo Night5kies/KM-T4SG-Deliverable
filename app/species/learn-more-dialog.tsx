@@ -5,19 +5,13 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Database } from "@/lib/schema";
-import { supabase } from "@supabase/auth-ui-shared";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import Image from "next/image";
-import { createServerSupabaseClient } from "@/lib/server-utils";
-import { createClientComponentClient  } from "@/lib/server-utils";
-import { UUID } from "crypto";
+
 
 type Species = Database["public"]["Tables"]["species"]["Row"];
 

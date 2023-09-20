@@ -19,7 +19,7 @@ export default function SpeciesCard({species, userId}:{species: Species, userId:
       {/* Replace with detailed view */}
       <br></br>
       <LearnMoreDialog key={species.id} species={species}/>
-      {userId === species.author ? <EditSpeciesDialog key={new Date().getTime()} species={species}/> : ""}
+      {userId === species.author ? <EditSpeciesDialog key={new Date().getTime()} species={species} userId={userId}/> : ""}
     </div>
   );
 }

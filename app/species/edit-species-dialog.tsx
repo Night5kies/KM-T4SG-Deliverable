@@ -1,6 +1,5 @@
 "use client";
 
-import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,7 +22,7 @@ import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ConfirmDelete } from "./confirm-delete";
-type Species = Database["public"]["Tables"]["species"]["Row"];
+type Species = Database["public"]["Tables"]["species"]["Update"];
 // We use zod (z) to define a schema for the "Add species" form.
 // zod handles validation of the input values with methods like .string(), .nullable(). It also processes the form inputs with .transform() before the inputs are sent to the database.
 
@@ -45,23 +44,24 @@ const speciesSchema = z.object({
     .trim()
     .min(1)
     .transform((val) => val?.trim()),
-  total_population: z.number().int().positive().min(1).optional(),
-  image: z
-    .string()
-    .url()
-    .nullable()
-    .transform((val) => val?.trim()),
+  total_population: z.number().int().positive().min(1),
+  image: z.string().url().transform((val) => val?.trim()),
 });
 
 type FormData = z.infer<typeof speciesSchema>;
 
-const defaultValues: Partial<FormData> = {
-
-};
-
-export default function EditSpeciesDialog({ species }: { species: Species }, { userId }: { userId: string }) {
+export default function EditSpeciesDialog({ species, userId }: { species: Species; userId: string }) {
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
+
+  const defaultValues: Partial<FormData> = {
+    kingdom: species.kingdom,
+    common_name: species.common_name,
+    scientific_name: species.scientific_name,
+    description: species.description,
+    total_population: species.total_population,
+    image: species.image,
+  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(speciesSchema),
@@ -73,8 +73,9 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
     // The `input` prop contains data that has already been processed by zod. We can now use it in a supabase query
     const supabase = createClientComponentClient<Database>();
 
-    const { error } = await supabase.from("species").update(
-      {
+    const { error } = await supabase
+      .from("species")
+      .update({
         author: userId,
         common_name: input.common_name,
         description: input.description,
@@ -82,8 +83,8 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
         scientific_name: input.scientific_name,
         total_population: input.total_population,
         image: input.image,
-      },
-    ).eq("id", species.id)
+      })
+      .eq("id", species.id);
 
     if (error) {
       return toast({
@@ -92,7 +93,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
         variant: "destructive",
       });
     }
-
 
     // Reset form values to the data values that have been processed by zod.
     // This way the user sees any changes that have occurred during transformation
@@ -108,7 +108,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-emerald-500"variant="secondary" onClick={() => setOpen(true)}>
+        <Button className="bg-emerald-500" variant="secondary" onClick={() => setOpen(true)}>
           Edit Species
         </Button>
       </DialogTrigger>
@@ -116,10 +116,10 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
         <DialogHeader>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <DialogTitle>Edit Species</DialogTitle>
-            <ConfirmDelete species={species}/>
+            <ConfirmDelete species={species} />
           </div>
           <DialogDescription>
-          Edit a new species here. Click &quot;Edit Species&quot; below when you&apos;re done.
+            Edit a new species here. Click &quot;Edit Species&quot; below when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -128,7 +128,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="scientific_name"
-                defaultValue={species.scientific_name}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Scientific Name</FormLabel>
@@ -142,7 +141,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="common_name"
-                defaultValue={species.common_name}
                 render={({ field }) => {
                   // We must extract value from field and convert a potential defaultValue of `null` to "" because inputs can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
                   const { value, ...rest } = field;
@@ -160,7 +158,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="kingdom"
-                defaultValue={species.kingdom}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Kingdom</FormLabel>
@@ -188,7 +185,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="total_population"
-                defaultValue={species.total_population}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Total population</FormLabel>
@@ -208,7 +204,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="image"
-                defaultValue={species.image}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
@@ -225,7 +220,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
               <FormField
                 control={form.control}
                 name="description"
-                defaultValue={species.description}
                 render={({ field }) => {
                   // We must extract value from field and convert a potential defaultValue of `null` to "" because textareas can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
                   const { value, ...rest } = field;
@@ -256,7 +250,6 @@ export default function EditSpeciesDialog({ species }: { species: Species }, { u
                 >
                   Cancel
                 </Button>
-
               </div>
             </div>
           </form>
